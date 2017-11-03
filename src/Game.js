@@ -19,8 +19,25 @@ export default class Game extends React.Component {
       const current = history[history.length - 1];
       const squares = current.squares.slice();
 
-      let d = document.getElementById('button'+(i));
+      let lineSelected = 8;
+      let lowerPlace = lineSelected*lineSelected -lineSelected;
+      let myTest = false;
+      while(myTest===false){
+        console.log(squares[i]);
+        if((i<lowerPlace) && (!squares[i+lineSelected])){
+          
+          i=i+lineSelected;
+          console.log("i = "+i);
+        }
+        else{
+          console.log(i);
+          myTest =true;
+        }
 
+      }
+
+      let d = document.getElementById('button'+(i));
+      
       if (calculateWinner(squares) || squares[i]) {
         return;
       }
@@ -57,7 +74,7 @@ export default class Game extends React.Component {
       const current = history[history.length-1];
       const squares = current.squares.slice();
       
-      for(let i=63; i>0; i--){
+      for(let i=squares.length-1; i>0; i--){
         let d = document.getElementById('button'+i);
         if(!squares[i]){
             d.classList.remove('redSquare');
