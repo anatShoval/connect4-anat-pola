@@ -18,11 +18,26 @@ export default class Game extends React.Component {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
-        
+
+      let d = document.getElementById('button'+(i));
+
       if (calculateWinner(squares) || squares[i]) {
         return;
       }
-      squares[i] = this.state.xIsNext ? 'X' : 'O';
+      console.log(document.getElementById('button'+(i)));//.target.getAttribute('id'));
+      
+      
+      if(this.state.xIsNext){
+        d.className += " redSquare";
+        squares[i] = 'X';
+      }
+      else{
+        d.className += " yellowSquare";
+        squares[i] = 'O';
+      }
+      
+
+      //squares[i] = this.state.xIsNext ? 'X' : 'O';
       this.setState({
         history: history.concat([{
           squares: squares,
@@ -37,6 +52,28 @@ export default class Game extends React.Component {
         stepNumber: step,
         xIsNext: (step % 2) === 0,
       });
+
+      const history = this.state.history.slice(0, step+1);
+      const current = history[history.length-1];
+      const squares = current.squares.slice();
+      
+      for(let i=63; i>0; i--){
+        let d = document.getElementById('button'+i);
+        if(!squares[i]){
+            d.classList.remove('redSquare');
+            d.classList.remove('yellowSquare');
+        }
+        else if(squares[i]==='X'){
+          if(!d.classList.contains('redSquare')){
+            d.className += " redSquare";
+          }
+        }
+        else{
+          if(!d.classList.contains('yellowSquare')){
+            d.className += " yellowSquare";
+          }
+        }
+      }
     }
   
     

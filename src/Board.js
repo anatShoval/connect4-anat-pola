@@ -5,11 +5,11 @@ import Square from './Square';
 
 export default class Board extends React.Component { 
     renderSquare(sqrValue, sqrLine) {
-      const className = "sqrLine" + sqrLine + "_" + sqrValue;
+      const idName = "button" + sqrValue //+ sqrLine + "_" + sqrValue;
       return (
         <Square
-          className = {className}
-          value = {this.props.squares[sqrValue]}
+          id = {idName}
+          value = {this.props.squares[sqrValue]}//{sqrLine + "_" + sqrValue}//{this.props.squares[sqrValue]}
           onClick = {() => this.props.onClick(sqrValue)}
         />
       );
