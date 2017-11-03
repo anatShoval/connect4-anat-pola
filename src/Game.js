@@ -12,8 +12,19 @@ export default class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
+        numSquares: 8,
       };
     }
+
+    /*numberOfRowsChangedHandler = (event) => {
+      const isNumber = (event) => { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
+      if(isNumber === true){
+        this.state.props.numSquares = event;
+      }
+    }*/
+
+    
+
     handleClick(i) {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
@@ -22,6 +33,11 @@ export default class Game extends React.Component {
       let lineSelected = 8;
       let lowerPlace = lineSelected*lineSelected -lineSelected;
       let myTest = false;
+
+      if (calculateWinner(squares) || squares[i]) {
+        return;
+      }
+
       while(myTest===false){
         console.log(squares[i]);
         if((i<lowerPlace) && (!squares[i+lineSelected])){
@@ -97,7 +113,8 @@ export default class Game extends React.Component {
     render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
-      const winner = calculateWinner(current.squares);
+      const numberLines = this.state.numSquares;
+      const winner = calculateWinner(current.squares, numberLines);
       
       const moves = history.map((step, move) => {
         const desc = move ?
@@ -133,18 +150,22 @@ export default class Game extends React.Component {
     }
   }
 
-  function calculateWinner(squares) {
+  function calculateWinner(squares, numberLines) {
     
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
+    const strike = [0, 0, 0, 0];
+    const sqrNum =  numberLines*numberLines;
+
+    var lines = [];
+    for(var i=0; i<sqrNum; i++) {
+      lines[i] = new Array(4);
+    }
+
+    for(let x = 0; x < sqrNum; x++){
+      for(let y = 0; y<(strike.length); y++){
+          lines[x][y] = x+y;
+      }
+    }
+
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c, d] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d]) {
