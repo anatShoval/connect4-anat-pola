@@ -7,35 +7,26 @@ export default class Game extends React.Component {
       super(props);
       const numSquares = 8;
       this.state = {
+        numSquares: 8,
         history: [{
           squares: Array(numSquares*numSquares).fill(null),
         }],
         stepNumber: 0,
         xIsNext: true,
-        numSquares: 8,
       };
     }
-
-    /*numberOfRowsChangedHandler = (event) => {
-      const isNumber = (event) => { return /^-?[\d.]+(?:e-?\d+)?$/.test(n); } 
-      if(isNumber === true){
-        this.state.props.numSquares = event;
-      }
-    }*/
-
-    
 
     handleClick(i) {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
-
-      let lineSelected = 8;
-      let lowerPlace = lineSelected*lineSelected -lineSelected;
+      const lineSelected = this.state.numSquares;
+      const winner = calculateWinner(current.squares, lineSelected);
+      const lowerPlace = lineSelected*lineSelected -lineSelected;
       let myTest = false;
 
-      if (calculateWinner(squares) || squares[i]) {
-        return;
+      if(winner || squares[i]){
+        return
       }
 
       while(myTest===false){
@@ -54,9 +45,6 @@ export default class Game extends React.Component {
 
       let d = document.getElementById('button'+(i));
       
-      if (calculateWinner(squares) || squares[i]) {
-        return;
-      }
       console.log(document.getElementById('button'+(i)));//.target.getAttribute('id'));
       
       
@@ -130,6 +118,7 @@ export default class Game extends React.Component {
       let status;
       if (winner) {
         status = 'Winner: ' + winner;
+
       } else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
@@ -155,16 +144,46 @@ export default class Game extends React.Component {
     const strike = [0, 0, 0, 0];
     const sqrNum =  numberLines*numberLines;
 
-    var lines = [];
-    for(var i=0; i<sqrNum; i++) {
+    let lines = [];
+    for(var i=0; i<sqrNum*4; i++) {
       lines[i] = new Array(4);
     }
 
-    for(let x = 0; x < sqrNum; x++){
-      for(let y = 0; y<(strike.length); y++){
-          lines[x][y] = x+y;
+    // horizontal coordinate
+    for(let h = 0; h < sqrNum; h++){
+      for(let s = 0; s<(strike.length); s++){
+          lines[h][s] = h+s;
       }
     }
+    console.log(lines.length)
+    let lArray =  sqrNum;
+
+    // vertical coordinate
+    for(let v = 0; v < sqrNum; v++){
+      for(let st = 0; st<(strike.length); st++){
+        lines[lArray][st] = v + (st*numberLines);
+        
+      }
+      lArray++;
+    }
+
+    // diagonal descending coordinate
+    for(let d = 0; d < sqrNum; d++){
+      for(let str = 0; str<(strike.length); str++){
+        lines[lArray][str] = d + (str*(numberLines+1));
+      }
+      lArray++;
+    }
+
+    //Ascending diagonal coordinate
+    for(let ad = 0; ad < sqrNum; ad++){
+      for(let stri = 0; stri<(strike.length); stri++){
+        lines[lArray][stri] = ad + (stri*(numberLines-1));
+      }
+      lArray++;
+    }
+
+    console.log(lines);
 
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c, d] = lines[i];

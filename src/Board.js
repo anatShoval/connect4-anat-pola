@@ -32,7 +32,6 @@ export default class Board extends React.Component {
       
       return (
         <div>
-
           {this.objectSquares(8)};
         </div>
       );
