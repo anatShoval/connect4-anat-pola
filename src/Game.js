@@ -1,26 +1,41 @@
 import React, { Component } from 'react';
 import './App.css';
 import Board from './Board';
+//import RadioBtn from './RadioBtn';
 
 export default class Game extends React.Component {
     constructor(props) {
       super(props);
-      const numSquares = 8;
       this.state = {
         numSquares: 8,
         history: [{
-          squares: Array(numSquares*numSquares).fill(null),
+          squares: Array(8*8).fill(null),
         }],
         stepNumber: 0,
         xIsNext: true,
+        selectedOption: 8,
       };
+    }
+
+    handleOptionChange(changeEvent) {
+      this.setState({
+        numSquares: changeEvent.target.value,
+        history: [{
+          squares: Array(changeEvent.target.value*changeEvent.target.value).fill(null),
+        }],
+        stepNumber: 0,
+        xIsNext: true,
+        selectedOption: changeEvent.target.value,
+      });
+
+      this.resetMySquares(1);
     }
 
     handleClick(i) {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
-      const lineSelected = this.state.numSquares;
+      const lineSelected = parseInt(this.state.numSquares);
       const winner = calculateWinner(current.squares, lineSelected);
       const lowerPlace = lineSelected*lineSelected -lineSelected;
       let myTest = false;
@@ -74,6 +89,10 @@ export default class Game extends React.Component {
         xIsNext: (step % 2) === 0,
       });
 
+      this.resetMySquares(step);
+    }
+
+    resetMySquares(step){
       const history = this.state.history.slice(0, step+1);
       const current = history[history.length-1];
       const squares = current.squares.slice();
@@ -128,6 +147,9 @@ export default class Game extends React.Component {
             <Board
               squares={current.squares}
               onClick={(i) => this.handleClick(i)}
+              numSquares={this.state.numSquares}
+              selectedOption={this.state.selectedOption}
+              onChange={(changeEvent) => this.handleOptionChange(changeEvent)}
             />
           </div>
           <div className="game-info">
