@@ -97,7 +97,7 @@ export default class Game extends React.Component {
       const current = history[history.length-1];
       const squares = current.squares.slice();
       
-      for(let i=squares.length-1; i>0; i--){
+      for(let i=squares.length-1; i>-1; i--){
         let d = document.getElementById('button'+i);
         if(!squares[i]){
             d.classList.remove('redSquare');

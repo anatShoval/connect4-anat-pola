@@ -38,6 +38,7 @@ export default class Board extends React.Component {
       console.log(numSquares);
       return (
         <div>
+          <div className="RadioBtnDiv">
           <div className="radio">
           <label>
             <input type="radio" name='radio' value="4" onChange = {setOnChange(4)} />
@@ -56,8 +57,10 @@ export default class Board extends React.Component {
             Bourd 8 * 8
           </label>          
         </div>
-
-          {this.objectSquares(numSquares)};
+        </div>
+          <div className="boardDiv">
+            {this.objectSquares(numSquares)};
+          </div>
         </div>
       );
     }
