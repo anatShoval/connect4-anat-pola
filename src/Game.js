@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Board from './Board';
-//import RadioBtn from './RadioBtn';
+import RadioBtns from './RadioBtns';
 
 export default class Game extends React.Component {
     constructor(props) {
@@ -13,19 +13,21 @@ export default class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
-        selectedOption: 8,
+        selectedOption:8,
       };
     }
 
-    handleOptionChange(changeEvent) {
+    handleOptionChange(value) {
+      console.log(value);
+      
       this.setState({
-        numSquares: changeEvent.target.value,
+        numSquares: value,
         history: [{
-          squares: Array(changeEvent.target.value*changeEvent.target.value).fill(null),
+          squares: Array(value*value).fill(null),
         }],
         stepNumber: 0,
         xIsNext: true,
-        selectedOption: changeEvent.target.value,
+        selectedOption: value,
       });
 
       this.resetMySquares(1);
@@ -58,7 +60,7 @@ export default class Game extends React.Component {
 
       }
 
-      let d = document.getElementById('button'+(i));
+      let d = document.getElementById(`button${i}`);
       
       console.log(document.getElementById('button'+(i)));//.target.getAttribute('id'));
       
@@ -144,12 +146,14 @@ export default class Game extends React.Component {
       return (
         <div className="game">
           <div className="game-board">
+            <RadioBtns
+              selectedOption={this.state.selectedOption}
+              onChange={(value) => this.handleOptionChange(value)}
+            />
             <Board
               squares={current.squares}
               onClick={(i) => this.handleClick(i)}
               numSquares={this.state.numSquares}
-              selectedOption={this.state.selectedOption}
-              onChange={(changeEvent) => this.handleOptionChange(changeEvent)}
             />
           </div>
           <div className="game-info">
