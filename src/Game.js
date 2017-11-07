@@ -13,12 +13,10 @@ export default class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
-        selectedOption:8,
       };
     }
 
     handleOptionChange(value) {
-      console.log(value);
       
       this.setState({
         numSquares: value,
@@ -27,10 +25,9 @@ export default class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
-        selectedOption: value,
       });
 
-      this.resetMySquares(1);
+      //this.resetMySquares(1);
     }
 
     handleClick(i) {
@@ -60,22 +57,8 @@ export default class Game extends React.Component {
 
       }
 
-      let d = document.getElementById(`button${i}`);
-      
-      console.log(document.getElementById('button'+(i)));//.target.getAttribute('id'));
-      
-      
-      if(this.state.xIsNext){
-        d.className += " redSquare";
-        squares[i] = 'X';
-      }
-      else{
-        d.className += " yellowSquare";
-        squares[i] = 'O';
-      }
-      
+      squares[i] = this.state.xIsNext ? 'X': 'O';
 
-      //squares[i] = this.state.xIsNext ? 'X' : 'O';
       this.setState({
         history: history.concat([{
           squares: squares,
@@ -147,7 +130,7 @@ export default class Game extends React.Component {
         <div className="game">
           <div className="game-board">
             <RadioBtns
-              selectedOption={this.state.selectedOption}
+              //selectedOption={this.state.selectedOption}
               onChange={(value) => this.handleOptionChange(value)}
             />
             <Board
@@ -167,53 +150,66 @@ export default class Game extends React.Component {
 
   function calculateWinner(squares, numberLines) {
     
-    const strike = [0, 0, 0, 0];
-    const sqrNum =  numberLines*numberLines;
-
     let lines = [];
-    for(var i=0; i<sqrNum*4; i++) {
+    let addLength = (numberLines-3) * numberLines
+    for(var i=0; i<numberLines*numberLines*4; i++) {
       lines[i] = new Array(4);
     }
 
     // horizontal coordinate
-    for(let h = 0; h < sqrNum; h++){
-      for(let s = 0; s<(strike.length); s++){
-          lines[h][s] = h+s;
-      }
+    let myCounter = 0;
+    for(let h = 0; h < numberLines*numberLines; h++){ 
+      if(h+4<numberLines*numberLines){
+        for(let s = 0; s<4; s++){
+          lines[myCounter][s] = h+s;
+        }
+        myCounter++;
+        if((((myCounter)%(numberLines-3)) === 0))
+        {
+          h+=3;
+        }
+      }  
+        
     }
-    console.log(lines.length)
-    let lArray =  sqrNum;
 
     // vertical coordinate
-    for(let v = 0; v < sqrNum; v++){
-      for(let st = 0; st<(strike.length); st++){
-        lines[lArray][st] = v + (st*numberLines);
-        
+    for(let v = 0; v < numberLines*numberLines; v++){
+      if(v+(3*numberLines) < numberLines*numberLines){
+        for(let st = 0; st<4; st++){
+          lines[myCounter][st] = v + (st*numberLines);
+        }
+        myCounter++;
       }
-      lArray++;
     }
 
     // diagonal descending coordinate
-    for(let d = 0; d < sqrNum; d++){
-      for(let str = 0; str<(strike.length); str++){
-        lines[lArray][str] = d + (str*(numberLines+1));
+    for(let d = 0; d < numberLines*numberLines; d++){
+      if(d+(3*(numberLines+1)) < numberLines*numberLines){
+        for(let str = 0; str<4; str++){
+          lines[myCounter][str] = d + (str*(numberLines+1));
+        }
+        myCounter++;
       }
-      lArray++;
     }
 
     //Ascending diagonal coordinate
-    for(let ad = 0; ad < sqrNum; ad++){
-      for(let stri = 0; stri<(strike.length); stri++){
-        lines[lArray][stri] = ad + (stri*(numberLines-1));
+    for(let ad = 0; ad < numberLines*numberLines; ad++){
+      if(ad+(3*(numberLines-1)) < numberLines*numberLines){
+        for(let stri = 0; stri<4; stri++){
+          lines[myCounter][stri] = ad + (stri*(numberLines-1));
+        }
+        myCounter++;
       }
-      lArray++;
     }
 
-    console.log(lines);
+    const slicedLines = lines.slice(0, myCounter);
 
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c, d] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d]) {
+    console.log(slicedLines)
+
+    //Check if there's a winner and if so return 'X' / 'O' else return null.
+    for (let i = 0; i < slicedLines.length; i++) {
+      const [a, b, c, d] = slicedLines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d] && d < numberLines*numberLines-1) {
         return squares[a];
       }
     }

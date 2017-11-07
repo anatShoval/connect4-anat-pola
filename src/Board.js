@@ -6,9 +6,11 @@ export default class Board extends React.Component {
 
     renderSquare(sqrValue, sqrLine) {
       const idName = "button" + sqrValue
+      const value = this.props.squares[sqrValue]
       return (
         <Square
           id = {idName}
+          className = {value ? value==='X' ? "square redSquare" : "square yellowSquare" : "square"}
           value = {this.props.squares[sqrValue]}
           onClick = {() => this.props.onClick(sqrValue)}
         />
