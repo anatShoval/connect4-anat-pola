@@ -151,15 +151,15 @@ export default class Game extends React.Component {
   function calculateWinner(squares, numberLines) {
     
     let lines = [];
-    let addLength = (numberLines-3) * numberLines
-    for(var i=0; i<numberLines*numberLines*4; i++) {
+    let addLength = numberLines * numberLines
+    for(var i=0; i<addLength*4; i++) {
       lines[i] = new Array(4);
     }
 
     // horizontal coordinate
     let myCounter = 0;
-    for(let h = 0; h < numberLines*numberLines; h++){ 
-      if(h+4<numberLines*numberLines){
+    for(let h = 0; h < addLength; h++){ 
+      if(h+3<addLength){
         for(let s = 0; s<4; s++){
           lines[myCounter][s] = h+s;
         }
@@ -173,8 +173,8 @@ export default class Game extends React.Component {
     }
 
     // vertical coordinate
-    for(let v = 0; v < numberLines*numberLines; v++){
-      if(v+(3*numberLines) < numberLines*numberLines){
+    for(let v = 0; v < addLength; v++){
+      if(v+(3*numberLines) < addLength){
         for(let st = 0; st<4; st++){
           lines[myCounter][st] = v + (st*numberLines);
         }
@@ -183,35 +183,34 @@ export default class Game extends React.Component {
     }
 
     // diagonal descending coordinate
-    for(let d = 0; d < numberLines*numberLines; d++){
-      if(d+(3*(numberLines+1)) < numberLines*numberLines){
+    for(let d = 0; d < addLength; d++){
+      if((d+3)*(numberLines+1) < addLength){
         for(let str = 0; str<4; str++){
-          lines[myCounter][str] = d + (str*(numberLines+1));
+          lines[myCounter][str] = (d + str)*(numberLines +1);
         }
         myCounter++;
       }
     }
 
     //Ascending diagonal coordinate
-    for(let ad = 0; ad < numberLines*numberLines; ad++){
-      if(ad+(3*(numberLines-1)) < numberLines*numberLines){
+    for(let ad = 0; ad < addLength; ad++){
+      if(((ad+3)*(numberLines-1) < addLength-1)&&(ad!=0)){
         for(let stri = 0; stri<4; stri++){
-          lines[myCounter][stri] = ad + (stri*(numberLines-1));
+          lines[myCounter][stri] = (ad + stri)*(numberLines-1);
         }
         myCounter++;
       }
     }
 
     const slicedLines = lines.slice(0, myCounter);
-
     console.log(slicedLines)
 
     //Check if there's a winner and if so return 'X' / 'O' else return null.
     for (let i = 0; i < slicedLines.length; i++) {
       const [a, b, c, d] = slicedLines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d] && d < numberLines*numberLines-1) {
-        return squares[a];
-      }
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d]) {
+          return squares[a];
+        }
     }
     return null;
   }
