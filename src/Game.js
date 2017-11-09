@@ -44,14 +44,11 @@ export default class Game extends React.Component {
       }
 
       while(myTest===false){
-        console.log(squares[i]);
         if((i<lowerPlace) && (!squares[i+lineSelected])){
           
           i=i+lineSelected;
-          console.log("i = "+i);
         }
         else{
-          console.log(i);
           myTest =true;
         }
 
@@ -106,7 +103,7 @@ export default class Game extends React.Component {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
       const numberLines = this.state.numSquares;
-      const winner = calculateWinner(current.squares, numberLines);
+      const winner = calculateWinner(current.squares);
       
       const moves = history.map((step, move) => {
         const desc = move ?
@@ -148,71 +145,136 @@ export default class Game extends React.Component {
     }
   }
 
-  function calculateWinner(squares, numberLines) {
-    
-    let lines = [];
-    let addLength = numberLines * numberLines
-    for(var i=0; i<addLength*4; i++) {
-      lines[i] = new Array(4);
-    }
-
-    // horizontal coordinate
-    let myCounter = 0;
-    for(let h = 0; h < addLength; h++){ 
-      if(h+3<addLength){
-        for(let s = 0; s<4; s++){
-          lines[myCounter][s] = h+s;
-        }
-        myCounter++;
-        if((((myCounter)%(numberLines-3)) === 0))
-        {
-          h+=3;
-        }
-      }  
-        
-    }
-
-    // vertical coordinate
-    for(let v = 0; v < addLength; v++){
-      if(v+(3*numberLines) < addLength){
-        for(let st = 0; st<4; st++){
-          lines[myCounter][st] = v + (st*numberLines);
-        }
-        myCounter++;
-      }
-    }
-
-    // diagonal descending coordinate
-    for(let d = 0; d < addLength; d++){
-      if((d+3)*(numberLines+1) < addLength){
-        for(let str = 0; str<4; str++){
-          lines[myCounter][str] = (d + str)*(numberLines +1);
-        }
-        myCounter++;
-      }
-    }
-
-    //Ascending diagonal coordinate
-    for(let ad = 0; ad < addLength; ad++){
-      if(((ad+3)*(numberLines-1) < addLength-1)&&(ad!=0)){
-        for(let stri = 0; stri<4; stri++){
-          lines[myCounter][stri] = (ad + stri)*(numberLines-1);
-        }
-        myCounter++;
-      }
-    }
-
-    const slicedLines = lines.slice(0, myCounter);
-    console.log(slicedLines)
-
-    //Check if there's a winner and if so return 'X' / 'O' else return null.
-    for (let i = 0; i < slicedLines.length; i++) {
-      const [a, b, c, d] = slicedLines[i];
-        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c] && squares[a] === squares[d]) {
-          return squares[a];
-        }
-    }
-    return null;
+  function calculateWinner(squares) {
+    //return X / O / null
+    if(diagonalDescending(squares)) return diagonalDescending(squares);
+    else if(checkAscendingDiagonalLeftToRight(squares)) return checkAscendingDiagonalLeftToRight(squares);
+    else if(horizontalCheck(squares)) return horizontalCheck(squares);
+    else if(verticalCheck(squares)) return verticalCheck(squares); 
+    else return null;    
   }
 
+//Ascending diagonal coordinate
+const checkAscendingDiagonalLeftToRight = (squares) =>{
+  //return X / O / null
+  let valTocheck;
+  let counter = 1;
+  const n = Math.sqrt(squares.length)
+  for(let i = 0; i < n-3; i++){
+    valTocheck = squares[i];       
+      for(let j=i+n+1; j < squares.length; j +=n+1 ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  for(let i = n; i < n*(n-3); i+=n){
+    valTocheck = squares[i];       
+      for(let j=i+n+1; j < squares.length; j +=n+1 ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  return null
+}
+// diagonal descending coordinate
+const diagonalDescending = (squares) =>{
+  //return X / O / null
+  let valTocheck;
+  let counter = 1;
+  const n = Math.sqrt(squares.length)
+  for(let i = 2; i < n; i++){
+    valTocheck = squares[i];       
+      for(let j=i+n-1; j < squares.length; j +=n-1 ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  for(let i = n; i < n*(n-3); i+=n){
+    valTocheck = squares[i];       
+      for(let j=i+n-1; j < squares.length; j +=n-1 ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  return null
+}
+// horizontal coordinate
+const horizontalCheck = (squares) =>{
+  let valTocheck;
+  let counter = 1;
+  const n = Math.sqrt(squares.length)
+  
+  for(let i = 0; i < n-3; i++){
+    valTocheck = squares[i];       
+      for(let j=i+1; j < squares.length; j++ ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter > 3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  return null
+}
+// vertical coordinate
+const verticalCheck = (squares) =>{
+  let valTocheck;
+  let counter = 1;
+  const n = Math.sqrt(squares.length)
+  
+  for(let i = 0; i < n; i++){
+    valTocheck = squares[i];       
+      for(let j=i+n; j < squares.length; j +=n ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  for(let i = n; i < n*(n-3); i+=n){
+    valTocheck = squares[i];       
+      for(let j=i+n; j < squares.length; j +=n ){
+          if(squares[j] && valTocheck===squares[j]){
+            counter++;
+            if(counter>3) return valTocheck;
+          }
+          else{
+            counter = 1;
+            valTocheck = squares[j]
+          }
+     }
+  }
+  return null
+}
 
