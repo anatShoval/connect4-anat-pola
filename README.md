@@ -11,4 +11,4 @@ Play the game with a friend, over [here](https://anatshoval.github.io/connect4-a
 1. Clone the repository
 1. `$ npm install`
 1. `$ npm start`
-1. The URL will be printed automaticly in a new browser, if faild to open use the folowing URL: http://localhost:3000/
+1. The URL will be printed automaticly in a new browser, if faild to open use the following URL: http://localhost:3000/
