@@ -8,7 +8,7 @@ Play the game with a friend, over [here](https://anatshoval.github.io/connect4-a
 
 ## Start a Local Development Server
 
-1. Clone the repository.
+1. Clone the repository
 1. `$ npm install`
 1. `$ npm start`
-1. A URL was printed. Open it in a browser.
+1. The URL will be printed automaticly in a new browser, if faild to open use the folowing URL: http://localhost:3000/
